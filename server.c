@@ -55,25 +55,36 @@ int main(int argc, char *argv[]){
         char buf[BUF_SIZE]; 
         ssize_t nread; 
         socklen_t peer_addrlen; 
-        struct addrinfo sockInfo; 
+        struct addrinfo hints = {0}; 
         struct addrinfo *result, *rp; 
         struct sockaddr_storage peer_addr; 
         struct sockaddr_in server_addr; 
         socklen_t server_addrlen = sizeof(server_addr);
 
-        memset(&sockInfo, 0, sizeof(sockInfo)); 
-        sockInfo.ai_family = AF_UNSPEC; // Allow IPV4 or IPV6
-        sockInfo.ai_socktype = SOCK_STREAM; 
-        sockInfo.ai_flags = AI_PASSIVE; 
-        sockInfo.ai_protocol = IPPROTO_TCP; // TCP protocol
-        sockInfo.ai_canonname = NULL; 
-        sockInfo.ai_addr = NULL; 
-        sockInfo.ai_next = NULL; 
+
+        /* A minimal TCP server would just do: 
+         * ai_family = AF_UNSPEC; // IPv4 or IPv6
+         * ai_socktype = SOCK_STREAM; // TCP 
+         * ai_flags = AI_PASSIVE; // for bind
+         *
+         */
+
+        /* Only need to set fields that constrain what you want returned */ 
+        hints.ai_family = AF_UNSPEC; /* Protocol family */
+        hints.ai_socktype = SOCK_STREAM; /* Socket type */ 
+        hints.ai_flags = AI_PASSIVE; /* Input Flags */
+        hints.ai_protocol = IPPROTO_TCP; /* Protocol for socket */
 
 
 
-        /* Returns a list of address structures. */
-        gai = getaddrinfo(NULL, port, &sockInfo, &result); 
+
+
+        /* Returns a list of address structures. 
+         * Takes a hostname/address and a service/port then produces one or more 
+         * socket ready addresses that you can give directly to connect() (client) or 
+         * bind() (server).   
+         */
+        gai = getaddrinfo(NULL, port, &hints, &result); 
         if(gai != 0){
                 fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(gai)); 
                 exit(EXIT_FAILURE); 

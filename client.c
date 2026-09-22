@@ -22,19 +22,18 @@ void *connect_to_server(const char *address, const char *port){
         ssize_t nread; 
         int *sfd = malloc(sizeof(int)); 
 
-        struct addrinfo sockInfo; 
+        struct addrinfo hints = {0}; 
         struct addrinfo *result, *rp; 
 
 
         // Obtain address(es) matching host/port
-        sockInfo.ai_family = AF_UNSPEC; 
-        sockInfo.ai_socktype = SOCK_STREAM; 
-        sockInfo.ai_flags = 0; 
-        sockInfo.ai_protocol = IPPROTO_TCP; 
+        hints.ai_family = AF_UNSPEC; 
+        hints.ai_socktype = SOCK_STREAM; 
+        hints.ai_protocol = IPPROTO_TCP; 
 
 
 
-        gai = getaddrinfo(address, port, &sockInfo, &result);
+        gai = getaddrinfo(address, port, &hints, &result);
         if (gai != 0){
                 fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(gai)); 
                 exit(EXIT_FAILURE); 
