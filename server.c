@@ -20,19 +20,22 @@ void handle_client(void *sock){
 
         while(1){
                 memset(mbuff,  0, sizeof(mbuff)); 
-                printf("Waiting for client...\n"); 
-                numbytes = recv(client_socket, mbuff, BUF_SIZE, 0); 
+                //printf("Waiting for client...\n"); 
+                numbytes = recv(client_socket, mbuff, BUF_SIZE - 1, 0); 
                 if (numbytes == -1){
                         perror("recv"); 
                         close(client_socket); 
                         break;
 
-                }else if(numbytes == 0){
-                        printf("Client disconnected gracefully (Socket FD: %d).\n", client_socket); 
                 }
+                else if(numbytes == 0){
+                        printf("Client disconnected gracefully (Socket FD: %d).\n", client_socket); 
+                        break;
+                }
+                printf("Buffer: %s\n", mbuff); 
+
         }
 
-        printf("%s\n", mbuff); 
 }
 
 

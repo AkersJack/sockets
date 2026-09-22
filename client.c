@@ -9,6 +9,12 @@
 #define BUF_SIZE 1024
 
 
+typedef struct Message{
+        char *buffer; // The message itself 
+        size_t size; // Size of the message
+} Message; 
+
+
 void *connect_to_server(const char *address, const char *port){
         int gai, numbytes; 
         char buf[BUF_SIZE]; 
@@ -76,6 +82,14 @@ int main(int argc, char *argv[]){
                 fprintf(stderr, "Could not connect\n"); 
                 exit(EXIT_FAILURE); 
         }
+        
+        if(send(*sock, message, message_len, 0) == -1){
+                perror("send"); 
+                close(*sock); 
+                exit(EXIT_FAILURE); 
+        }
+        printf("Sent message\n"); 
+
 
 
         return 0;
